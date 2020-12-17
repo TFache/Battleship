@@ -1,11 +1,7 @@
 package game.grid;
 
 import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.util.Scanner;
-
 import game.boats.*;
 
 public class Grid {
@@ -66,17 +62,30 @@ public class Grid {
 	public void setLegit(boolean legit) {
 		this.legit = legit;
 	}
-	//Affiche la grille de jeu
-	public void affiche(PrintWriter out1) {
+	
+	
+	/**
+	 * Affiche la grille de jeu
+	 * 
+	 * @param out : la sortie où afficher la grille
+	 */
+	public void affiche(PrintWriter out) {
 		for(int i=0; i < grid.length; i++) {
 			for(int j = 0; j < grid[i].length; j++) {
-				out1.print(grid[i][j] + " ");
+				out.print(grid[i][j] + " ");
 			}
-			out1.print("\n");
+			out.print("\n");
 		}
 	}
 	
 	
+	/**
+	 * Permet de choisir l'emplacement d'un bateau et de le placer
+	 * 
+	 * @param in : l'entrée des coordonnées se passe par ici
+	 * @param out : la prise d'informations se passe ici
+	 * @param boat : le bateau concerné par le choix de l'emplacement
+	 */
 	public void choix(BufferedReader in, PrintWriter out, Boat boat) {
 		while(!this.isLegit()) {
 			if(boat.getSizeBoat() == 1) out.println("Bateau de 1 case à placer");
@@ -113,8 +122,15 @@ public class Grid {
 		
 		
 	}
-		
-	//Place un bateau sur la grille
+	
+	/**
+	 * Place un bateau sur la grille
+	 * 
+	 * @param x : la valeur en x de la première case du bateau
+	 * @param y : la valeur en y de la première case du bateau
+	 * @param size : la taille du bateau
+	 * @param horizontal : un booléen qui renvoie true si le bateau est placé à l'horizontale
+	 */
 	public void placement(int x, int y, int size, boolean horizontal) {
 		
 			if(horizontal) {
@@ -144,7 +160,15 @@ public class Grid {
 		
 	}
 	
-	//Traite l'attaque du joueur
+	
+	/**
+	 * Traite l'attaque du joueur
+	 * 
+	 * @param adverse : l'adversaire qui va subir l'attaque
+	 * @param x : la valeur en x de l'attaque
+	 * @param y : la valeur en y de l'attaque
+	 * @param vueAdverse : le joueur attaquant va avoir connaissance de cette vue
+	 */
 	public void attaque(Grid adverse, int x, int y, Grid vueAdverse) {
 		
 
@@ -179,6 +203,7 @@ public class Grid {
 		return grid[y - 1][x - 1].equals("o");
 	}
 	
+	//Vérifie si un joueur a gagné
 	public void checkVictory(Grid adverse) {
 		int count = 0;
 		for(int i=0; i < adverse.grid.length; i++) {

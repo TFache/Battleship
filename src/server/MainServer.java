@@ -3,10 +3,6 @@ package server;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import game.*;
-import game.boats.FiveCasesBoat;
-import game.grid.Grid;
-
 public class MainServer {
 
 	public static void main(String[] args) {

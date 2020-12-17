@@ -4,8 +4,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Random;
-
 import game.boats.*;
 import game.grid.Grid;
 
@@ -26,19 +24,19 @@ public class ThreadServer extends Thread {
 			out2 = new PrintWriter(client2.getOutputStream(), true);
 
 
-			out1.println("Joueur 1\n");
-			out2.println("Joueur 2\n");
+			out1.println("Vous êtes le joueur 1\n");
+			out2.println("Vous êtes le joueur 2\n");
 
 
 		}catch (Exception e) {}
 	}
 
 	public void run() {
-		//Définition de la grille de jeu et de sa taille
+		//Définition de la grille de jeu et de sa taille par le joueur 1
 		Grid grid1; Grid grid2; Grid vue1; Grid vue2; //Les deux grilles + ce que leur adversaire voit
 		try {
 			
-			out1.println("Définissez la taille de la grille de jeu");
+			out1.println("Définissez la taille de la grille de jeu :");
 			String sizeStr = in1.readLine();
 			int size = Integer.parseInt(sizeStr);
 			
@@ -56,6 +54,7 @@ public class ThreadServer extends Thread {
 			
 			vue1 = new Grid(new String[size][size]);
 			vue2 = new Grid(new String[size][size]);
+			
 			//Définition du nombre de bateaux et placement
 			if(size >= 2) {
 				Boat one = new OneCaseBoat(0);
@@ -91,7 +90,7 @@ public class ThreadServer extends Thread {
 				grid1.setLegit(false);grid2.setLegit(false);
 
 				
-				while(!grid1.isLegit()) {
+				while(!grid1.isLegit()) /*Tant que le placement n'est pas autorisé*/ {
 					out1.println("---------------------------------------------------------------");
 					//choix d'une case à viser
 					out1.println("J1, choisissez votre case :");
@@ -145,9 +144,7 @@ public class ThreadServer extends Thread {
 				out2.println("J1 a visé : [" +x1 + ";" + y1 + "]");
 				grid1.affiche(out1); //Affiche la grille du joueur
 				grid2.affiche(out2);
-				
 
-				   //Si fail, demander la commande solo de celui qui a fail (par des ifs ig)
 				
 				//Traitement d'une victoire (tous les bateaux coulés)
 				grid1.checkVictory(grid2);
