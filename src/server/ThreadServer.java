@@ -35,10 +35,28 @@ public class ThreadServer extends Thread {
 		//Définition de la grille de jeu et de sa taille par le joueur 1
 		Grid grid1; Grid grid2; Grid vue1; Grid vue2; //Les deux grilles + ce que leur adversaire voit
 		try {
+			boolean sizeLegit = false; int size = 0;
+			while(!sizeLegit) {
+				try {
+					out1.println("Définissez la taille de la grille de jeu :");
+					out2.println("Définition de la taille de jeu en cours...");
+					String sizeStr = in1.readLine();
+					size = Integer.parseInt(sizeStr);
+					if(size < 0) {
+						size = -size;
+						out1.println("Valeur saisie négative. Nous vous l'avons fait repasser positive.");
+					}
+					if(size == 0) {
+						out1.println("Impossible de définir une grille nulle. Veuilez recommencer.");
+						this.run();
+					}
+					sizeLegit = true;
+				} catch (Exception e) {
+					out1.println("Saisie invalide. Veuillez recommencer.");
+				}
+				
+			}
 			
-			out1.println("Définissez la taille de la grille de jeu :");
-			String sizeStr = in1.readLine();
-			int size = Integer.parseInt(sizeStr);
 			
 			grid1 = new Grid(new String[size][size]);
 			grid1.setId(1);
@@ -56,30 +74,40 @@ public class ThreadServer extends Thread {
 			vue2 = new Grid(new String[size][size]);
 			
 			//Définition du nombre de bateaux et placement
-			if(size >= 2) {
+			if(size >= 1) {
 				Boat one = new OneCaseBoat(0);
 				grid1.choix(in1, out1, one);
+				grid1.affiche(out1);
 				grid2.choix(in2, out2, one);
+				grid2.affiche(out2);
 			}
 			if(size >= 4) {
 				Boat two = new TwoCasesBoat(1);
 				grid1.choix(in1, out1, two);
+				grid1.affiche(out1);
 				grid2.choix(in2, out2, two);
+				grid2.affiche(out2);
 			}
 			if(size >= 6) {
 				Boat three  =new ThreeCasesBoat(2);
 				grid1.choix(in1, out1, three);
+				grid1.affiche(out1);
 				grid2.choix(in2, out2, three);
+				grid2.affiche(out2);
 			}
 			if(size >= 8) {
 				Boat four  =new FourCasesBoat(3);
 				grid1.choix(in1, out1, four);
+				grid1.affiche(out1);
 				grid2.choix(in2, out2, four);
+				grid2.affiche(out2);
 			}
 			if(size >= 10) {
 				Boat five = new FiveCasesBoat(4);
 				grid1.choix(in1, out1, five);
+				grid1.affiche(out1);
 				grid2.choix(in2, out2, five);
+				grid2.affiche(out2);
 			}
 			
 			//Déroulement du jeu
@@ -88,10 +116,11 @@ public class ThreadServer extends Thread {
 				String x1 = null;String y1 = null;String x2 = null;String y2 = null;
 				
 				grid1.setLegit(false);grid2.setLegit(false);
-
+				out1.println("---------------------------------------------------------------");
+				out2.println("---------------------------------------------------------------");
 				
 				while(!grid1.isLegit()) /*Tant que le placement n'est pas autorisé*/ {
-					out1.println("---------------------------------------------------------------");
+					
 					//choix d'une case à viser
 					out1.println("J1, choisissez votre case :");
 					out1.println("x : ");
@@ -111,7 +140,7 @@ public class ThreadServer extends Thread {
 				}
 
 				while(!grid2.isLegit()) {
-					out2.println("---------------------------------------------------------------");
+					
 					//choix d'une case à viser
 					out2.println("J2, choisissez votre case :");
 					out2.println("x : ");

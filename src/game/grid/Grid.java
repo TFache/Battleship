@@ -33,6 +33,12 @@ public class Grid {
 	}
 	
 	
+	public boolean isCanNotBePlaced() {
+		return canNotBePlaced;
+	}
+	public void setCanNotBePlaced(boolean canNotBePlaced) {
+		this.canNotBePlaced = canNotBePlaced;
+	}
 	public int getId() {
 		return id;
 	}
@@ -64,6 +70,9 @@ public class Grid {
 	}
 	
 	
+	
+	
+	
 	/**
 	 * Affiche la grille de jeu
 	 * 
@@ -87,6 +96,7 @@ public class Grid {
 	 * @param boat : le bateau concerné par le choix de l'emplacement
 	 */
 	public void choix(BufferedReader in, PrintWriter out, Boat boat) {
+		this.setLegit(false);this.setCanNotBePlaced(false);
 		while(!this.isLegit()) {
 			if(boat.getSizeBoat() == 1) out.println("Bateau de 1 case à placer");
 			else out.println("Bateau de " + boat.getSizeBoat() + " à placer.");
@@ -107,11 +117,16 @@ public class Grid {
 				else out.println("Indication non reconnue : bateau aligné horizontalement par défaut.");
 				
 				out.println("J" + this.getId() + " : placement d'un bateau taille "
-				+ boat.getSizeBoat()+ " en [" + coordX + ";" + coordY + "]");
+				+ boat.getSizeBoat()+ " en [" + coordX + ";" + coordY + "].");
 				
-				this.placement(x, y, boat.getSizeBoat(), isHorizontal);
+				this.placement(x, y, boat.getSizeBoat(), isHorizontal, out);
+				if(this.canNotBePlaced ) {
+					out.println("Placement impossible ici ; veuillez recommencer.");
+					this.choix(in, out, boat);
+				}
+				
 				this.setLegit(true);
-				this.affiche(out);
+
 			} catch (Exception e) {
 				out.println("Emplacement non reconnu. Veuillez recommencer.");
 			} 
@@ -130,33 +145,38 @@ public class Grid {
 	 * @param y : la valeur en y de la première case du bateau
 	 * @param size : la taille du bateau
 	 * @param horizontal : un booléen qui renvoie true si le bateau est placé à l'horizontale
+	 * @param out : là où la grille doit être affichée
 	 */
-	public void placement(int x, int y, int size, boolean horizontal) {
-		
+	public void placement(int x, int y, int size, boolean horizontal, PrintWriter out) {
+
 			if(horizontal) {
 				for(int i = x; i < x + size; i++) {
 					if(isUsedCase(i, y)) {
-						System.out.println("Emplacement [" + i + ";" + y + "] déjà utilisé");
+						out.println("Emplacement [" + i + ";" + y + "] déjà utilisé");
 						canNotBePlaced = true;
 						break;
 					}
 				}
 				for(int i = x; i < x + size; i++) {
 					if(!canNotBePlaced) this.grid[y - 1][i - 1] = "o";
+
 				}
 			}
 			else {
 				for(int i = y; i < y + size; i++) {
 					if(isUsedCase(x, i)) {
-						System.out.println("Emplacement [" + x + ";" + i + "] déjà utilisé");
+						out.println("Emplacement [" + x + ";" + i + "] déjà utilisé");
 						canNotBePlaced = true;
 						break;
 					}
 				}
 				for(int i = y; i < y + size; i++) {
 					if(!canNotBePlaced) this.grid[i - 1][x - 1] = "o";
+
 				}
+
 			}
+			
 		
 	}
 	
@@ -190,7 +210,13 @@ public class Grid {
 		
 	}
 	
-	//Affiche un message en fonction du résultat de votre attaque
+	
+	/**
+	 * Affiche un message en fonction du résultat de votre attaque
+	 * 
+	 * @param adverse : la grille de l'adversaire
+	 * @return un message suivant le résultat
+	 */
 	public String messageTouche(Grid adverse) {
 		if(this.isTouche()) return "Vous avez touché !";
 		else if(!this.isTouche()) return "Vous avez manqué votre cible !";
